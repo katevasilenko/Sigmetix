@@ -7,17 +7,22 @@ USER = "postgres"
 PASSWORD = "secretpass"
 PORT = "5432"
 
-try:
-    conn = psycopg2.connect(database=DBNAME,
-                            user=USER,
-                            host=HOST,
-                            password=PASSWORD,
-                            port=PORT)
-except (Exception, psycopg2.DatabaseError) as error_:
-    print("Error while connection to PostgreSQL", error_)
 
+def connection_to_db():
+    try:
+        conn = psycopg2.connect(database=DBNAME,
+                                user=USER,
+                                host=HOST,
+                                password=PASSWORD,
+                                port=PORT)
+        return conn
+    except (Exception, psycopg2.DatabaseError) as error_:
+        print("Error while connection to PostgreSQL", error_)
+
+
+conn = connection_to_db()
 cursor1 = conn.cursor()
-cursor1.execute("drop table if exists listing;")
+cursor1.execute("drop table if exists listing cascade;")
 cursor1.execute("""
     CREATE TABLE listing(
         id integer PRIMARY KEY,
@@ -41,10 +46,10 @@ cursor1.execute("""
 conn.commit()
 
 cursor2 = conn.cursor()
-cursor2.execute("drop table if exists review_detailed;")
+cursor2.execute("drop table if exists review_detailed cascade;")
 cursor2.execute("""
     CREATE TABLE review_detailed(
-        listing_id integer,
+        listing_id integer REFERENCES listing (id),
         id integer PRIMARY KEY,
         date date,
         reviewer_id integer,
