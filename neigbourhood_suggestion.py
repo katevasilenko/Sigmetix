@@ -2,26 +2,26 @@ import psycopg2
 
 from connection import connection_to_db
 
-room_type_input = input("Enter room type you prefer: ")
-price_input = int(input("Enter price expectation: "))
-nights_input = int(input("Enter number of night: "))
-
 conn = connection_to_db()
 
 
-def search_by_input():
+def search_by_input(user_input):
     try:
         with conn.cursor() as cur:
             cur.execute("""
-            SELECT neighbourhood
+            SELECT DISTINCT neighbourhood
             FROM listing
-            WHERE room_type = %s AND price = %s AND minimum_nights = %s;
-            """, (room_type_input, price_input, nights_input))
+            WHERE neighbourhood LIKE %s || '%%';
+            """, (user_input,))
             result = [r[0] for r in cur.fetchall()]
-            print(result)
+            if result:
+                print(result)
+            else:
+                print("Invalid input")
     except (Exception, psycopg2.Error) as error:
         conn.rollback()
         print(error)
 
 
-print(search_by_input())
+if __name__ == "__main__":
+    search_by_input(input("Enter part of neighbourhood: "))
