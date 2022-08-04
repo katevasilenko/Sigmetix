@@ -1,20 +1,20 @@
 import psycopg2
 
 
-HOST = "localhost"
-DBNAME = "madrid_airbnb_data_db"
-USER = "postgres"
-PASSWORD = "secretpass"
+DB_HOST = "localhost"
+DB_NAME = "madrid_airbnb_data_db"
+DB_USER = "postgres"
+DB_PASSWORD = "secretpass"
 PORT = "5432"
 
 
 def connection_to_db():
     conn = None
     try:
-        conn = psycopg2.connect(database=DBNAME,
-                                user=USER,
-                                host=HOST,
-                                password=PASSWORD,
+        conn = psycopg2.connect(host=DB_HOST,
+                                database=DB_NAME,
+                                user=DB_USER,
+                                password=DB_PASSWORD,
                                 port=PORT)
         print("Success connection!")
     except (Exception, psycopg2.DatabaseError) as error_:
@@ -63,7 +63,7 @@ def main(conn):
     conn.commit()
     print("Review detailed table created!")
 
-    listing_file = open("listings.csv")
+    listing_file = open("csv_files/listings.csv")
     sql_statement = """
         COPY listing
         FROM STDIN WITH
@@ -76,7 +76,7 @@ def main(conn):
     cursor1.close()
     print("Listing table filled!")
 
-    reviews_detailed_file = open("reviews_detailed.csv")
+    reviews_detailed_file = open("csv_files/reviews_detailed.csv")
     sql_statement = """
         COPY review_detailed
         FROM STDIN WITH
