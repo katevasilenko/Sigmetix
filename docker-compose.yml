@@ -1,0 +1,30 @@
+"""If you see this message, that's mean docker-compose does not work for now. I'm so sorry"""
+version: "3"
+
+services:
+  app:
+    build:
+      context: .
+    volumes:
+      - ./:/app
+    command: >
+      sh -c "python connection.py &&
+             python main.py"
+    environment:
+      - DB_HOST=host
+      - DB_NAME=madrid_airbnb_data_db
+      - DB_USER=postgres
+      - DB_PASSWORD=secretpass
+    depends_on:
+      - db
+
+  db:
+    image: postgres:14-alpine
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_DB=madrid_airbnb_data_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=secretpass
+    volumes:
+      - "./csv_files:/var/lib/postgresql/data/"
