@@ -1,21 +1,18 @@
+import os
+
 import psycopg2
-
-
-DB_HOST = "localhost"
-DB_NAME = "madrid_airbnb_data_db"
-DB_USER = "postgres"
-DB_PASSWORD = "secretpass"
-PORT = "5432"
+from dotenv import load_dotenv, find_dotenv
 
 
 def connection_to_db():
     conn = None
+    load_dotenv(find_dotenv())
     try:
-        conn = psycopg2.connect(host=DB_HOST,
-                                database=DB_NAME,
-                                user=DB_USER,
-                                password=DB_PASSWORD,
-                                port=PORT)
+        conn = psycopg2.connect(host=os.getenv("DB_HOST"),
+                                database=os.getenv("DB_NAME"),
+                                user=os.getenv("DB_USER"),
+                                password=os.getenv("DB_PASSWORD"),
+                                port=os.getenv("PORT"))
         print("Success connection!")
     except (Exception, psycopg2.DatabaseError) as error_:
         print("Error while connection to PostgreSQL", error_)
