@@ -15,3 +15,7 @@ pip3 install -r requirements.txt
 python connection.py
 python main.py
 ```
+
+## Usage
+
+Replace the values in **.env** with your values.
